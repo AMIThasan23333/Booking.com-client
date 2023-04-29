@@ -22,11 +22,36 @@ const Signup = () => {
 
     const email = event.target.email.value
     const password = event.target.password.value
+    const image = event.target.image.files[0]
 
     console.log(name,email,password)
 
-  }
+    const formData = new FormData()
+    formData.append('image', image)
+    const url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_KEY}`
+    console.log(url)
 
+    fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(res => res.json())
+      .then(imageData => {
+        console.log(imageData)
+        // Create User
+        createUser(email, password)
+          .then(result => {
+     
+          })
+
+          .catch(err => {
+            console.log(err)
+            setLoading(false)
+          })
+      })
+      .catch(err => console.log(err))
+
+  }
   return (
     <div className='flex justify-center items-center pt-8'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
