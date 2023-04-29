@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import PrimaryButton from '../../Components/Button/PrimaryButton'
 import { AuthContext } from './../../contexts/AuthProvider';
+import { Toaster, toast } from 'react-hot-toast';
 
 const Signup = () => {
 
@@ -29,7 +30,7 @@ const Signup = () => {
     const formData = new FormData()
     formData.append('image', image)
     const url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_KEY}`
-    console.log(url)
+
 
     fetch(url, {
       method: 'POST',
@@ -37,10 +38,20 @@ const Signup = () => {
     })
     .then(res => res.json())
       .then(imageData => {
-        console.log(imageData)
+        // console.log(imageData)
+        console.log(imageData.data.display_url)
         // Create User
         createUser(email, password)
           .then(result => {
+
+            updateUserProfile(name, imageData.data.display_url)
+            .then(   
+              verifyEmail()
+              .then(() => {
+
+                toast.success("Pleasechack email for veryfication")
+              })
+            )
      
           })
 
