@@ -1,8 +1,60 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import PrimaryButton from '../../Components/Button/PrimaryButton'
+import { AuthContext } from '../../contexts/AuthProvider'
+import { toast } from 'react-hot-toast'
 
 const Login = () => {
+
+  const [userEmail, setUserEmail] = useState('')
+  const { signin, loading, setLoading, signInWithGoogle, resetPassword } =
+    useContext(AuthContext)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    const email = event.target.email.value
+    const password = event.target.password.value
+
+    signin(email, password)
+      .then(result => {
+        toast.success('Login Successful.....!')
+        // Get Token
+        // setAuthToken(result.user)
+        // navigate(from, { replace: true })
+      })
+      .catch(err => {
+        toast.error(err.message)
+        console.log(err)
+        setLoading(false)
+      })
+  }
+
+  const handleGoogleSignin = () => {
+    signInWithGoogle().then(result => {
+      console.log(result.user)
+      // setAuthToken(result.user)
+      // navigate(from, { replace: true })
+    })
+  }
+
+  // Pass reset
+  const handleReset = () => {
+    resetPassword(userEmail)
+      .then(() => {
+        toast.success('Please check your email for reset link')
+      })
+      .catch(err => {
+        toast.error(err.message)
+        console.log(err)
+        setLoading(false)
+      })
+  }
+
+
+
   return (
     <div className='flex justify-center items-center pt-8'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>

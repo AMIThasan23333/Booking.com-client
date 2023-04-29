@@ -68,6 +68,8 @@ const Signup = () => {
   const handleGoogleSignIn = () => {
 
     signInWithGoogle()
+    .then(result => console.log(result
+      .user))
   }
 
 
